@@ -1,5 +1,6 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
+import { siteConfig } from '@/data/site'
 
 export default function Contact() {
   const ref = useRef(null)
@@ -38,8 +39,8 @@ export default function Contact() {
   const socials = [
     {
       label: 'GitHub',
-      href: 'https://github.com/kashif4817',
-      username: '@kashif4817',
+      href: siteConfig.socials.github,
+      username: siteConfig.socials.githubUser,
       desc: 'See my code',
       icon: (
         <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
@@ -52,8 +53,8 @@ export default function Contact() {
     },
     {
       label: 'LinkedIn',
-      href: 'https://linkedin.com/in/kashif-mehmood-dev',
-      username: 'kashif-mehmood-dev',
+      href: siteConfig.socials.linkedin,
+      username: siteConfig.socials.linkedinUser,
       desc: 'Connect with me',
       icon: (
         <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
@@ -66,8 +67,8 @@ export default function Contact() {
     },
     {
       label: 'Email',
-      href: 'mailto:0112kashif@email.com',
-      username: '0112kashif@email.com',
+      href: `mailto:${siteConfig.email}`,
+      username: siteConfig.email,
       desc: 'Send me a mail',
       icon: (
         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -80,8 +81,8 @@ export default function Contact() {
     },
     {
       label: 'WhatsApp',
-      href: 'https://wa.me/923171640134',
-      username: '+92 317 1640134',
+      href: `https://wa.me/${siteConfig.whatsapp}`,
+      username: siteConfig.phone,
       desc: 'Chat on WhatsApp',
       icon: (
         <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
@@ -149,17 +150,17 @@ export default function Contact() {
               {/* Info */}
               <div className="bg-white dark:bg-[#111827] border border-gray-100 dark:border-gray-800 rounded-2xl p-6 space-y-4">
                 <div>
-                  <h3 className="font-display font-bold text-xl text-gray-900 dark:text-white mb-1">Kashif Mehmood</h3>
+                  <h3 className="font-display font-bold text-xl text-gray-900 dark:text-white mb-1">{siteConfig.name}</h3>
                   <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
                     <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                     </svg>
-                    Punjab, Pakistan
+                    {siteConfig.location}
                   </div>
                 </div>
                 <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-green-50 dark:bg-green-500/10 border border-green-100 dark:border-green-500/20">
                   <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                  <span className="text-sm font-medium text-green-700 dark:text-green-400">Available for Junior Roles & Freelance</span>
+                  <span className="text-sm font-medium text-green-700 dark:text-green-400">{siteConfig.availability}</span>
                 </div>
               </div>
 

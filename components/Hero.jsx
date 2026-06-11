@@ -39,7 +39,7 @@ export default function Hero() {
       <div className="relative z-10 max-w-4xl mx-auto px-5 sm:px-8 text-center">
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-mono font-medium bg-blue-500/10 dark:bg-blue-500/15 text-blue-600 dark:text-blue-400 border border-blue-200/60 dark:border-blue-500/20 mb-8 animate-fade-up">
           <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-          Open to Junior Roles &amp; Internships Pakistan
+          Open to Junior Roles &amp; Internships · Pakistan
         </div>
         <h1 className="font-display font-black text-5xl sm:text-6xl md:text-7xl lg:text-8xl text-gray-900 dark:text-white leading-[0.95] tracking-tight mb-6 animate-fade-up" style={{ animationDelay: '0.1s' }}>
           Kashif<br /><span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-blue-400 to-indigo-500">Mehmood</span>
@@ -48,7 +48,7 @@ export default function Hero() {
           Full Stack Web Developer · MERN Stack · Next js
         </p>
         <p className="text-base sm:text-lg text-gray-500 dark:text-gray-400 max-w-xl mx-auto mb-10 leading-relaxed animate-fade-up" style={{ animationDelay: '0.3s' }}>
-          Building real-world apps with React,Next.js, Node.js &amp; Express
+          Building real-world apps with React, Next.js, Node.js &amp; Express
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center animate-fade-up" style={{ animationDelay: '0.4s' }}>
           <a href="#projects" className="group inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-blue-500 text-white font-semibold text-sm hover:bg-blue-600 transition-all hover:shadow-lg hover:shadow-blue-500/30 hover:-translate-y-0.5">

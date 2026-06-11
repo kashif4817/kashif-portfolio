@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef } from "react";
+import { siteConfig, stats } from "@/data/site";
 
 export default function About() {
   const ref = useRef(null);
@@ -13,13 +14,6 @@ export default function About() {
     if (ref.current) observer.observe(ref.current);
     return () => observer.disconnect();
   }, []);
-
-  const stats = [
-    { value: "1", label: "Job" },
-    { value: "5+", label: "Projects Built" },
-    { value: "1", label: "Internship" },
-    { value: "A+", label: "Academic Grade" },
-  ];
 
   return (
     <section id="about" className="py-12 sm:py-24 bg-white dark:bg-[#0d1117]">
@@ -63,7 +57,7 @@ export default function About() {
                       d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                     />
                   </svg>
-                  Pakistan
+                  {siteConfig.locationShort}
                 </div>
                 <div className="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-1.5">
                   <svg
@@ -80,7 +74,7 @@ export default function About() {
                       d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
                     />
                   </svg>
-                  BSSE
+                  {siteConfig.education}
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-3 mt-6">
@@ -112,8 +106,8 @@ export default function About() {
             </h2>
             <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-6 text-base sm:text-lg">
               I specialize in the MERN stack and build full-stack web apps from
-              scratch , every line intentional, every concept understood.
-              — and I'm actively looking for junior or internship roles to grow further.
+              scratch — every line intentional, every concept understood. I&apos;m
+              actively looking for junior or internship roles to grow further.
             </p>
             <div className="flex flex-wrap gap-2 mb-8">
               {[
@@ -133,7 +127,7 @@ export default function About() {
             </div>
             <div className="flex gap-3">
               <a
-                href="https://github.com/kashif4817"
+                href={siteConfig.socials.github}
                 target="_blank"
                 rel="noreferrer"
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-sm font-semibold hover:opacity-90 transition-all hover:-translate-y-0.5"
@@ -148,7 +142,7 @@ export default function About() {
                 GitHub
               </a>
               <a
-                href="https://linkedin.com/in/kashif-mehmood-dev"
+                href={siteConfig.socials.linkedin}
                 target="_blank"
                 rel="noreferrer"
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border border-blue-200 dark:border-blue-500/30 text-blue-600 dark:text-blue-400 text-sm font-semibold hover:bg-blue-50 dark:hover:bg-blue-500/10 transition-all hover:-translate-y-0.5"

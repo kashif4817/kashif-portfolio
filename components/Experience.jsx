@@ -26,7 +26,7 @@ export default function Experience() {
       title: 'Junior Web Developer',
       company: 'Airoxlab',
       type: 'On-site · Full-time',
-      duration: 'Nov 2025 – Apr 2026',
+      duration: 'Nov 2025 – Present',
       points: [
         'Promoted to full-time role after internship, taking ownership of key frontend modules',
         'Developed and maintained scalable web applications for business clients using Next.js and React',

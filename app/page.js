@@ -1,5 +1,3 @@
-'use client'
-import { useState, useEffect } from 'react'
 import Navbar from '../components/Navbar'
 import Hero from '../components/Hero'
 import About from '../components/About'
@@ -9,32 +7,22 @@ import Experience from '../components/Experience'
 import Contact from '../components/Contact'
 import Footer from '../components/Footer'
 import Services from '@/components/Services'
+import { getPublicProjects } from '@/lib/projects'
 
-export default function Home() {
-  const [dark, setDark] = useState(true)
+// Re-fetch projects from the DB at most once a minute (ISR).
+export const revalidate = 60
 
-  useEffect(() => {
-    const saved = localStorage.getItem('theme')
-    const isDark = saved ? saved === 'dark' : true
-    setDark(isDark)
-    document.documentElement.classList.toggle('dark', isDark)
-  }, [])
-
-  const toggleTheme = () => {
-    const next = !dark
-    setDark(next)
-    document.documentElement.classList.toggle('dark', next)
-    localStorage.setItem('theme', next ? 'dark' : 'light')
-  }
+export default async function Home() {
+  const projects = await getPublicProjects()
 
   return (
     <main className="min-h-screen bg-white dark:bg-[#0d1117] transition-colors duration-300">
-      <Navbar toggleTheme={toggleTheme} dark={dark} />
+      <Navbar />
       <Hero />
       <About />
       <Skills />
       <Services />
-      <Projects />
+      <Projects projects={projects} />
       <Experience />
       <Contact />
       <Footer />
