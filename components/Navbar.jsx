@@ -1,117 +1,142 @@
 'use client'
-import { useState, useEffect } from 'react'
-import { useTheme } from 'next-themes'
-import { navLinks } from '@/data/site'
+import { useEffect, useRef, useState } from 'react'
+import gsap from 'gsap'
+import { navLinks, siteConfig } from '@/data/site'
+import Magnetic from './fx/Magnetic'
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
-  const [mounted, setMounted] = useState(false)
-  const { resolvedTheme, setTheme } = useTheme()
-
-  useEffect(() => setMounted(true), [])
+  const overlayRef = useRef(null)
+  const tlRef = useRef(null)
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20)
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
+    const onScroll = () => setScrolled(window.scrollY > 24)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  const isDark = resolvedTheme === 'dark'
-  const toggleTheme = () => setTheme(isDark ? 'light' : 'dark')
+  // Fullscreen menu timeline (mobile)
+  useEffect(() => {
+    const overlay = overlayRef.current
+    if (!overlay) return
+    const links = overlay.querySelectorAll('.menu-item')
+    gsap.set(overlay, { yPercent: -100, autoAlpha: 0 })
+    const tl = gsap
+      .timeline({ paused: true })
+      .to(overlay, { yPercent: 0, autoAlpha: 1, duration: 0.65, ease: 'power4.inOut' })
+      .fromTo(
+        links,
+        { yPercent: 130 },
+        { yPercent: 0, duration: 0.55, stagger: 0.05, ease: 'power4.out' },
+        '-=0.2',
+      )
+    tlRef.current = tl
+    return () => tl.kill()
+  }, [])
+
+  useEffect(() => {
+    const tl = tlRef.current
+    if (!tl) return
+    if (menuOpen) {
+      window.dispatchEvent(new Event('km:scroll-stop'))
+      tl.timeScale(1).play()
+    } else if (tl.progress() > 0) {
+      if (!window.__kmScrollLocked) window.dispatchEvent(new Event('km:scroll-start'))
+      tl.timeScale(1.4).reverse()
+    }
+  }, [menuOpen])
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-      scrolled
-        ? 'bg-white/90 dark:bg-[#0d1117]/90 backdrop-blur-md shadow-sm border-b border-gray-100 dark:border-gray-800/60'
-        : 'bg-transparent'
-    }`}>
-      <div className="max-w-6xl mx-auto px-5 sm:px-8 flex items-center justify-between h-16">
+    <header>
+      <nav
+        className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
+          scrolled && !menuOpen
+            ? 'border-b border-line bg-ink/80 backdrop-blur-md'
+            : 'border-b border-transparent'
+        }`}
+      >
+        <div className="flex h-16 items-center justify-between px-5 sm:h-[4.5rem] sm:px-10">
+          <a
+            href="#home"
+            onClick={() => setMenuOpen(false)}
+            className="relative z-50 font-display text-lg font-bold tracking-tight text-paper"
+          >
+            KM<span className="text-acid">©</span>
+          </a>
 
-        {/* Logo */}
-        <a href="#home" className="flex items-center gap-2.5 group">
-          <div className="relative w-9 h-9 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/30 group-hover:shadow-blue-500/50 group-hover:scale-105 transition-all duration-300">
-            <span className="text-white font-bold text-xs tracking-wider">KM</span>
-            <div className="absolute inset-0 rounded-xl bg-white opacity-0 group-hover:opacity-10 transition-opacity duration-300" />
-          </div>
-          <div className="hidden sm:flex flex-col leading-none gap-0.5">
-            <span className="font-bold text-base text-gray-900 dark:text-white tracking-tight">
-              Kashif<span className="text-blue-500">.</span>
-            </span>
-            <span className="text-[10px] text-gray-400 dark:text-gray-500 font-mono tracking-widest uppercase">Developer</span>
-          </div>
-        </a>
+          <ul className="hidden items-center gap-7 md:flex">
+            {navLinks.map((link) => (
+              <li key={link.label}>
+                <a
+                  href={link.href}
+                  className="nav-link font-mono text-[11px] uppercase tracking-[0.2em] text-dim transition-colors hover:text-paper"
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
 
-        {/* Desktop Links */}
-        <ul className="hidden md:flex items-center gap-1">
-          {navLinks.map((link) => (
-            <li key={link.label}>
+          <div className="flex items-center gap-3">
+            <Magnetic strength={0.25} className="hidden sm:block">
               <a
-                href={link.href}
-                className="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-500/10 transition-all"
+                href="#contact"
+                className="inline-flex items-center rounded-full bg-paper px-5 py-2.5 text-xs font-semibold uppercase tracking-wide text-ink transition-colors hover:bg-acid"
               >
-                {link.label}
+                Let&apos;s talk
               </a>
-            </li>
-          ))}
-        </ul>
+            </Magnetic>
 
-        {/* Right side */}
-        <div className="flex items-center gap-2">
-
-          {/* Theme Toggle */}
-          <button
-            onClick={toggleTheme}
-            className="w-9 h-9 rounded-lg flex items-center justify-center text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all"
-            aria-label="Toggle theme"
-          >
-            {mounted && !isDark ? (
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-              </svg>
-            ) : (
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-              </svg>
-            )}
-          </button>
-
-          {/* Hamburger */}
-          <button
-            onClick={() => setMenuOpen(!menuOpen)}
-            className="md:hidden w-9 h-9 rounded-lg flex flex-col items-center justify-center gap-1.5 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all"
-            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
-            aria-expanded={menuOpen}
-            aria-controls="mobile-menu"
-          >
-            <span className={`block w-5 h-0.5 bg-gray-600 dark:bg-gray-300 transition-all duration-300 ${menuOpen ? 'rotate-45 translate-y-2' : ''}`} />
-            <span className={`block w-5 h-0.5 bg-gray-600 dark:bg-gray-300 transition-all duration-300 ${menuOpen ? 'opacity-0' : ''}`} />
-            <span className={`block w-5 h-0.5 bg-gray-600 dark:bg-gray-300 transition-all duration-300 ${menuOpen ? '-rotate-45 -translate-y-2' : ''}`} />
-          </button>
+            <button
+              onClick={() => setMenuOpen((v) => !v)}
+              className="relative z-50 flex h-10 w-10 flex-col items-center justify-center gap-1.5 md:hidden"
+              aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+              aria-expanded={menuOpen}
+              aria-controls="mobile-menu"
+            >
+              <span className={`block h-0.5 w-6 bg-paper transition-all duration-300 ${menuOpen ? 'translate-y-2 rotate-45' : ''}`} />
+              <span className={`block h-0.5 w-6 bg-paper transition-all duration-300 ${menuOpen ? 'opacity-0' : ''}`} />
+              <span className={`block h-0.5 w-6 bg-paper transition-all duration-300 ${menuOpen ? '-translate-y-2 -rotate-45' : ''}`} />
+            </button>
+          </div>
         </div>
-      </div>
+      </nav>
 
-      {/* Mobile Menu */}
+      {/* Fullscreen mobile menu */}
       <div
         id="mobile-menu"
-        className={`md:hidden overflow-hidden transition-all duration-300 ${
-          menuOpen ? 'max-h-80 opacity-100' : 'max-h-0 opacity-0'
-        } bg-white dark:bg-[#0d1117] border-b border-gray-100 dark:border-gray-800`}
+        ref={overlayRef}
+        aria-hidden={!menuOpen}
+        className="fixed inset-0 z-40 flex flex-col justify-between bg-ink px-5 pb-10 pt-28 md:hidden"
       >
-        <ul className="px-5 pb-4 pt-2 flex flex-col gap-1">
-          {navLinks.map((link) => (
-            <li key={link.label}>
+        <ul className="flex flex-col gap-1">
+          {navLinks.map((link, i) => (
+            <li key={link.label} className="overflow-hidden">
               <a
                 href={link.href}
                 onClick={() => setMenuOpen(false)}
-                className="block px-3 py-2.5 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-500/10 transition-all"
+                className="menu-item flex items-baseline gap-4 py-1.5 font-display text-4xl font-bold uppercase leading-none text-paper"
               >
+                <span className="font-mono text-xs font-normal text-acid">0{i + 1}</span>
                 {link.label}
               </a>
             </li>
           ))}
         </ul>
+
+        <div className="overflow-hidden">
+          <div className="menu-item flex flex-col gap-4 border-t border-line pt-6 font-mono text-xs uppercase tracking-[0.2em] text-dim">
+            <a href={`mailto:${siteConfig.email}`} className="hover:text-acid transition-colors">{siteConfig.email}</a>
+            <div className="flex gap-6">
+              <a href={siteConfig.socials.github} target="_blank" rel="noreferrer" className="hover:text-paper transition-colors">GitHub ↗</a>
+              <a href={siteConfig.socials.linkedin} target="_blank" rel="noreferrer" className="hover:text-paper transition-colors">LinkedIn ↗</a>
+              <a href={`https://wa.me/${siteConfig.whatsapp}`} target="_blank" rel="noreferrer" className="hover:text-paper transition-colors">WhatsApp ↗</a>
+            </div>
+          </div>
+        </div>
       </div>
-    </nav>
+    </header>
   )
 }

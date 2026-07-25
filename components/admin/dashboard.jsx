@@ -34,7 +34,7 @@ export function Dashboard() {
     <div className="space-y-6">
       <div className="flex items-center justify-between gap-3">
         <div>
-          <h1 className="text-lg font-medium tracking-tight">Dashboard</h1>
+          <h1 className="font-display text-xl font-semibold tracking-tight">Dashboard</h1>
           <p className="text-sm text-muted-foreground">
             Overview of your portfolio content.
           </p>
@@ -52,12 +52,14 @@ export function Dashboard() {
           <Card key={k.label}>
             <CardContent className="flex items-center justify-between p-4">
               <div>
-                <p className="text-xs text-muted-foreground">{k.label}</p>
-                <p className="mt-1 text-2xl font-medium tabular-nums">
+                <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+                  {k.label}
+                </p>
+                <p className="mt-1.5 font-display text-3xl font-bold tabular-nums">
                   {k.value ?? '—'}
                 </p>
               </div>
-              <div className="flex size-9 items-center justify-center rounded-md bg-muted text-muted-foreground">
+              <div className="flex size-9 items-center justify-center rounded-md bg-primary/10 text-primary">
                 <k.icon className="size-4" />
               </div>
             </CardContent>

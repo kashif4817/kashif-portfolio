@@ -106,7 +106,7 @@ export function ProjectsManager() {
     <div className="space-y-5">
       <div className="flex items-center justify-between gap-3">
         <div>
-          <h1 className="text-lg font-medium tracking-tight">Projects</h1>
+          <h1 className="font-display text-xl font-semibold tracking-tight">Projects</h1>
           <p className="text-sm text-muted-foreground">
             Manage the projects shown on your portfolio.
           </p>
@@ -131,12 +131,12 @@ export function ProjectsManager() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-14">Cover</TableHead>
-                <TableHead>Title</TableHead>
-                <TableHead className="hidden sm:table-cell">Category</TableHead>
-                <TableHead className="hidden md:table-cell">Status</TableHead>
-                <TableHead className="hidden lg:table-cell">Links</TableHead>
-                <TableHead className="w-20 text-right">Actions</TableHead>
+                <TableHead className="w-14 font-mono text-[10px] uppercase tracking-[0.15em]">Cover</TableHead>
+                <TableHead className="font-mono text-[10px] uppercase tracking-[0.15em]">Title</TableHead>
+                <TableHead className="hidden font-mono text-[10px] uppercase tracking-[0.15em] sm:table-cell">Category</TableHead>
+                <TableHead className="hidden font-mono text-[10px] uppercase tracking-[0.15em] md:table-cell">Status</TableHead>
+                <TableHead className="hidden font-mono text-[10px] uppercase tracking-[0.15em] lg:table-cell">Links</TableHead>
+                <TableHead className="w-20 text-right font-mono text-[10px] uppercase tracking-[0.15em]">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -217,7 +217,7 @@ export function ProjectsManager() {
         open={editing !== null}
         onOpenChange={(o) => !o && setEditing(null)}
       >
-        <DialogContent>
+        <DialogContent className="max-h-[92dvh] overflow-y-auto sm:max-w-4xl">
           {editing !== null && (
             <ProjectForm
               project={editing === 'new' ? null : editing}

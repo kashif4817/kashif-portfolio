@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
 @import "tailwindcss";
 @import "tw-animate-css";
@@ -55,32 +55,34 @@
   --info-border: oklch(0.882 0.05 253);
 }
 
+/* Branded dark theme — matches the public site (ink surfaces, acid primary).
+   The admin panel is forced into this theme via forcedTheme="dark". */
 .dark {
-  --background: oklch(0.165 0.004 285.8);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.21 0.006 285.885);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.21 0.006 285.885);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.985 0 0);
-  --primary-foreground: oklch(0.21 0.006 285.885);
-  --secondary: oklch(0.274 0.006 286.033);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.274 0.006 286.033);
-  --muted-foreground: oklch(0.705 0.015 286.067);
-  --accent: oklch(0.274 0.006 286.033);
-  --accent-foreground: oklch(0.985 0 0);
+  --background: #0e0e0d;
+  --foreground: #f2f2ee;
+  --card: #141413;
+  --card-foreground: #f2f2ee;
+  --popover: #161615;
+  --popover-foreground: #f2f2ee;
+  --primary: #d1fa3c;
+  --primary-foreground: #0a0a0a;
+  --secondary: #1d1d1b;
+  --secondary-foreground: #f2f2ee;
+  --muted: #1a1a19;
+  --muted-foreground: #8f8f88;
+  --accent: #1d1d1b;
+  --accent-foreground: #f2f2ee;
   --destructive: oklch(0.704 0.191 22.216);
   --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 14%);
-  --ring: oklch(0.552 0.016 285.938);
+  --border: rgba(255, 255, 255, 0.09);
+  --input: rgba(255, 255, 255, 0.13);
+  --ring: #d1fa3c;
 
-  --sidebar: oklch(0.19 0.006 285.885);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-accent: oklch(0.274 0.006 286.033);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar: #0a0a0a;
+  --sidebar-foreground: #f2f2ee;
+  --sidebar-border: rgba(255, 255, 255, 0.08);
+  --sidebar-accent: #1a1a19;
+  --sidebar-accent-foreground: #f2f2ee;
 
   /* Functional status (dark) */
   --success: oklch(0.31 0.06 158);
@@ -155,23 +157,99 @@
 }
 
 /* ───────────────────────────────────────────────
-   Public site styles
+   Public site — award design system
+   ink (bg) · paper (fg) · dim (muted) · line (borders) · acid (accent)
    ─────────────────────────────────────────────── */
-html { scroll-behavior: smooth; }
+@theme {
+  --color-ink: #0a0a0a;
+  --color-ink-2: #121211;
+  --color-paper: #f2f2ee;
+  --color-dim: #8f8f88;
+  --color-line: rgba(255, 255, 255, 0.09);
+  --color-acid: #d1fa3c;
+
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
 
 /* Fixed navbar offset so anchor jumps don't hide section headings */
 section[id] { scroll-margin-top: 5rem; }
 
 body {
-  font-family: 'DM Sans', system-ui, sans-serif;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  font-family: 'Inter', system-ui, sans-serif;
 }
 
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: #f3f4f6; }
-::-webkit-scrollbar-thumb { background: #60a5fa; border-radius: 9999px; }
-.dark ::-webkit-scrollbar-track { background: #111827; }
-.dark ::-webkit-scrollbar-thumb { background: #2563eb; }
+::selection { background: #d1fa3c; color: #0a0a0a; }
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #0a0a0a; }
+::-webkit-scrollbar-thumb { background: #2b2b28; border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: #3d3d39; }
+
+/* Outlined display text (hero second line, footer wordmark) */
+.text-stroke {
+  -webkit-text-stroke: 1px #f2f2ee;
+  color: transparent;
+}
+@media (min-width: 768px) {
+  .text-stroke { -webkit-text-stroke-width: 1.5px; }
+}
+
+/* Infinite marquee — track holds two identical copies, shifts by half */
+@keyframes km-marquee { to { transform: translateX(-50%); } }
+.marquee-track {
+  animation: km-marquee var(--marquee-duration, 32s) linear infinite;
+  will-change: transform;
+}
+
+/* Project cards: tall (9:16) page screenshots slowly pan inside their
+   frame on hover; images shorter than the frame stay as a cover crop.
+   100cqh = frame height (container query units). */
+.shot-frame { container-type: size; }
+.shot-img {
+  transition: transform 7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.group:hover .shot-img {
+  transform: translateY(min(0px, calc(100cqh - 100%)));
+}
+
+/* Custom cursor (desktop only) */
+.km-cursor-dot,
+.km-cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 90;
+  border-radius: 9999px;
+  mix-blend-mode: difference;
+}
+.km-cursor-dot { width: 6px; height: 6px; background: #f2f2ee; }
+.km-cursor-ring { width: 36px; height: 36px; border: 1px solid rgba(242, 242, 238, 0.55); }
+@media (hover: none), (pointer: coarse) {
+  .km-cursor-dot, .km-cursor-ring { display: none; }
+}
+
+/* Nav link underline sweep */
+.nav-link { position: relative; }
+.nav-link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  height: 1px;
+  width: 100%;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.45s cubic-bezier(0.76, 0, 0.24, 1);
+}
+.nav-link:hover::after,
+.nav-link:focus-visible::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
 
 .section-animate {
   opacity: 0;
