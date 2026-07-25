@@ -21,9 +21,7 @@ export const siteConfig = {
     'Web Developer Pakistan',
   ],
 
-  // TODO: confirm the email you want shown publicly. This replaced the
-  // previous "0112kashif@email.com", which was not a deliverable address.
-  email: 'info@airoxlab.com',
+  email: '0112kashif@gmail.com',
   phone: '+92 317 1640134',
   phoneRaw: '+923171640134',
   whatsapp: '923171640134',

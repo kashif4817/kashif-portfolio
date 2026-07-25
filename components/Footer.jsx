@@ -86,9 +86,9 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Giant wordmark */}
+        {/* Giant wordmark — outlined so it stays visible on dim screens */}
         <div className="select-none overflow-hidden" aria-hidden="true">
-          <p className="whitespace-nowrap text-center font-display text-[clamp(4.5rem,19vw,15rem)] font-bold uppercase leading-[0.8] text-paper/[0.05]">
+          <p className="text-stroke whitespace-nowrap text-center font-display text-[clamp(4.5rem,19vw,15rem)] font-bold uppercase leading-[0.8] opacity-40">
             Kashif©
           </p>
         </div>
