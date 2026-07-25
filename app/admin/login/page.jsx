@@ -83,8 +83,8 @@ export default function AdminLoginPage() {
           <div className="mb-5 flex size-14 items-center justify-center rounded-xl bg-primary text-primary-foreground">
             <LockKeyhole className="size-6" />
           </div>
-          <h1 className="text-xl font-medium tracking-tight">Admin access</h1>
-          <p className="mt-1 flex items-center gap-1.5 text-sm text-muted-foreground">
+          <h1 className="font-display text-xl font-semibold tracking-tight">Admin access</h1>
+          <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
             Enter your {PIN_LENGTH}-digit PIN
           </p>
         </div>
@@ -143,6 +143,10 @@ export default function AdminLoginPage() {
             <Delete className="size-5" />
           </button>
         </div>
+
+        <p className="mt-10 text-center font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
+          KM© Portfolio CMS
+        </p>
       </div>
     </div>
   )

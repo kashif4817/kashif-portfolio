@@ -7,6 +7,9 @@ import Experience from '../components/Experience'
 import Contact from '../components/Contact'
 import Footer from '../components/Footer'
 import Services from '@/components/Services'
+import SmoothScroll from '@/components/fx/SmoothScroll'
+import Preloader from '@/components/fx/Preloader'
+import Cursor from '@/components/fx/Cursor'
 import { getPublicProjects } from '@/lib/projects'
 
 // Re-fetch projects from the DB at most once a minute (ISR).
@@ -16,7 +19,10 @@ export default async function Home() {
   const projects = await getPublicProjects()
 
   return (
-    <main className="min-h-screen bg-white dark:bg-[#0d1117] transition-colors duration-300">
+    <main className="min-h-screen bg-ink text-paper antialiased">
+      <Preloader />
+      <SmoothScroll />
+      <Cursor />
       <Navbar />
       <Hero />
       <About />

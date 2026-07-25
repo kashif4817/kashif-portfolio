@@ -1,75 +1,115 @@
 'use client'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import dynamic from 'next/dynamic'
+import gsap from 'gsap'
+import { siteConfig } from '@/data/site'
+import Magnetic from './fx/Magnetic'
+import { whenIntroReady } from './fx/Preloader'
+
+const HeroShape = dynamic(() => import('./three/HeroShape'), { ssr: false })
 
 export default function Hero() {
-  const canvasRef = useRef(null)
+  const rootRef = useRef(null)
+  const [show3d, setShow3d] = useState(false)
 
+  // 3D only on desktop pointers without reduced motion — phones get the type
   useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-    const ctx = canvas.getContext('2d')
-    let animId
-    let particles = []
-    const resize = () => { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight }
-    resize()
-    window.addEventListener('resize', resize)
-    for (let i = 0; i < 50; i++) {
-      particles.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, r: Math.random() * 2 + 0.5, dx: (Math.random() - 0.5) * 0.4, dy: (Math.random() - 0.5) * 0.4, alpha: Math.random() * 0.5 + 0.1 })
-    }
-    const draw = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height)
-      particles.forEach((p) => {
-        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2)
-        ctx.fillStyle = `rgba(99,179,237,${p.alpha})`; ctx.fill()
-        p.x += p.dx; p.y += p.dy
-        if (p.x < 0 || p.x > canvas.width) p.dx *= -1
-        if (p.y < 0 || p.y > canvas.height) p.dy *= -1
-      })
-      animId = requestAnimationFrame(draw)
-    }
-    draw()
-    return () => { cancelAnimationFrame(animId); window.removeEventListener('resize', resize) }
+    const desktop = window.matchMedia('(min-width: 768px)').matches
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (desktop && !reduced) setShow3d(true)
   }, [])
 
+  // Intro: masked name lines, then the supporting elements
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    let off
+    const ctx = gsap.context(() => {
+      gsap.set('.hero-line', { yPercent: 115 })
+      gsap.set('.hero-el', { y: 28, opacity: 0 })
+      const tl = gsap
+        .timeline({ paused: true })
+        .to('.hero-line', { yPercent: 0, duration: 1.2, stagger: 0.12, ease: 'power4.out' }, 0.1)
+        .to('.hero-el', { y: 0, opacity: 1, duration: 0.9, stagger: 0.09, ease: 'power3.out' }, '-=0.7')
+      off = whenIntroReady(() => tl.play())
+    }, rootRef)
+    return () => {
+      off?.()
+      ctx.revert()
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!show3d) return
+    const el = rootRef.current?.querySelector('.hero-3d')
+    if (el) gsap.fromTo(el, { opacity: 0 }, { opacity: 1, duration: 1.4, delay: 0.5, ease: 'power2.out' })
+  }, [show3d])
+
+  const [first, last] = siteConfig.name.split(' ')
+
   return (
-    <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-slate-50 via-blue-50/30 to-white dark:from-[#0d1117] dark:via-[#0f1a2e] dark:to-[#0d1117]">
-      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none" />
-      <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-blue-400/10 dark:bg-blue-500/10 rounded-full blur-3xl animate-pulse-slow pointer-events-none" />
-      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-indigo-400/10 dark:bg-indigo-500/8 rounded-full blur-3xl animate-pulse-slow pointer-events-none" style={{ animationDelay: '2s' }} />
-      <div className="relative z-10 max-w-4xl mx-auto px-5 sm:px-8 text-center">
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-mono font-medium bg-blue-500/10 dark:bg-blue-500/15 text-blue-600 dark:text-blue-400 border border-blue-200/60 dark:border-blue-500/20 mb-8 animate-fade-up">
-          <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-          Open to Junior Roles &amp; Internships · Pakistan
+    <section id="home" ref={rootRef} className="relative flex min-h-screen flex-col overflow-hidden bg-ink">
+      {show3d && (
+        <div className="hero-3d pointer-events-none absolute inset-y-0 right-[-14%] z-0 hidden w-[62%] md:block" style={{ opacity: 0 }}>
+          <HeroShape />
         </div>
-        <h1 className="font-display font-black text-5xl sm:text-6xl md:text-7xl lg:text-8xl text-gray-900 dark:text-white leading-[0.95] tracking-tight mb-6 animate-fade-up" style={{ animationDelay: '0.1s' }}>
-          Kashif<br /><span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-blue-400 to-indigo-500">Mehmood</span>
+      )}
+
+      <div className="relative z-10 mx-auto flex w-full max-w-[92rem] flex-1 flex-col justify-center px-5 pb-12 pt-28 sm:px-10">
+        <div className="hero-el inline-flex w-fit items-center gap-2.5 rounded-full border border-line px-4 py-2 font-mono text-[11px] uppercase tracking-[0.2em] text-dim">
+          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-acid" />
+          {siteConfig.availability}
+        </div>
+
+        <h1 className="mt-8 font-display font-bold uppercase leading-[0.88] tracking-tight">
+          <span className="block overflow-hidden">
+            <span className="hero-line block text-[clamp(3.2rem,13vw,10.5rem)] text-paper">{first}</span>
+          </span>
+          <span className="block overflow-hidden md:pl-[10vw]">
+            <span className="hero-line text-stroke block text-[clamp(3.2rem,13vw,10.5rem)]">{last}</span>
+          </span>
         </h1>
-        <p className="font-mono text-sm sm:text-base text-blue-500 dark:text-blue-400 tracking-wider uppercase mb-4 animate-fade-up" style={{ animationDelay: '0.2s' }}>
-          Full Stack Web Developer · MERN Stack · Next js
-        </p>
-        <p className="text-base sm:text-lg text-gray-500 dark:text-gray-400 max-w-xl mx-auto mb-10 leading-relaxed animate-fade-up" style={{ animationDelay: '0.3s' }}>
-          Building real-world apps with React, Next.js, Node.js &amp; Express
-        </p>
-        <div className="flex flex-col sm:flex-row gap-3 justify-center animate-fade-up" style={{ animationDelay: '0.4s' }}>
-          <a href="#projects" className="group inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-blue-500 text-white font-semibold text-sm hover:bg-blue-600 transition-all hover:shadow-lg hover:shadow-blue-500/30 hover:-translate-y-0.5">
-            View Projects
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
-          </a>
-          <a href="#contact" className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 font-semibold text-sm hover:border-blue-400 dark:hover:border-blue-500 hover:text-blue-500 dark:hover:text-blue-400 transition-all hover:-translate-y-0.5">
-            Contact Me
-          </a>
-          <a
-            href="/Kashif_Mehmood_Resume.pdf"
-            download="Kashif_Mehmood_Resume.pdf"
-            className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 font-semibold text-sm hover:border-green-400 dark:hover:border-green-500 hover:text-green-600 dark:hover:text-green-400 transition-all hover:-translate-y-0.5"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-            </svg>
-            Resume
-          </a>
+
+        <div className="mt-10 flex flex-col gap-8 md:mt-14 md:flex-row md:items-end md:justify-between">
+          <div className="hero-el max-w-md">
+            <p className="font-mono text-xs uppercase tracking-[0.3em] text-acid">
+              Full Stack Developer — MERN · Next.js
+            </p>
+            <p className="mt-4 text-sm leading-relaxed text-dim sm:text-base">
+              Building real-world web apps and SaaS products from {siteConfig.locationShort}. Every line
+              intentional, every concept understood.
+            </p>
+          </div>
+
+          <div className="hero-el flex flex-wrap items-center gap-3">
+            <Magnetic>
+              <a
+                href="#projects"
+                className="inline-flex items-center gap-2 rounded-full bg-acid px-7 py-4 text-xs font-bold uppercase tracking-wide text-ink transition-transform hover:scale-[1.03]"
+              >
+                View Projects ↗
+              </a>
+            </Magnetic>
+            <Magnetic>
+              <a
+                href="/Kashif_Mehmood_Resume.pdf"
+                download="Kashif_Mehmood_Resume.pdf"
+                className="inline-flex items-center gap-2 rounded-full border border-line px-7 py-4 text-xs font-bold uppercase tracking-wide text-paper transition-colors hover:border-paper"
+              >
+                Resume ↓
+              </a>
+            </Magnetic>
+          </div>
         </div>
-        
+      </div>
+
+      <div className="hero-el relative z-10 border-t border-line">
+        <div className="mx-auto flex w-full max-w-[92rem] items-center justify-between px-5 py-5 font-mono text-[10px] uppercase tracking-[0.25em] text-dim sm:px-10 sm:text-[11px]">
+          <span>{siteConfig.location}</span>
+          <span className="hidden sm:block">MERN · Next.js · SaaS</span>
+          <span className="flex items-center gap-2">
+            Scroll <span className="inline-block animate-bounce">↓</span>
+          </span>
+        </div>
       </div>
     </section>
   )

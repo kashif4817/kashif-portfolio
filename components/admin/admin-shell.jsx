@@ -2,7 +2,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { useTheme } from 'next-themes'
 import {
   LayoutDashboard,
   FolderKanban,
@@ -10,8 +9,7 @@ import {
   PanelLeft,
   Menu,
   Search,
-  Sun,
-  Moon,
+  ArrowUpRight,
   LogOut,
   Plus,
 } from 'lucide-react'
@@ -155,12 +153,14 @@ function Sidebar({ collapsed, mobileOpen, pathname, onNavigate }) {
         'w-60',
       )}
     >
-      <div className="flex h-14 shrink-0 items-center gap-2 px-4">
-        <div className="flex size-7 shrink-0 items-center justify-center rounded-md bg-primary text-xs font-medium text-primary-foreground">
+      <div className="flex h-14 shrink-0 items-center gap-2.5 border-b border-sidebar-border px-4">
+        <div className="flex size-7 shrink-0 items-center justify-center rounded-md bg-primary font-display text-xs font-bold text-primary-foreground">
           KM
         </div>
         {!collapsed && (
-          <span className="truncate text-sm font-medium">Portfolio admin</span>
+          <span className="truncate font-display text-sm font-semibold tracking-tight">
+            Portfolio Admin
+          </span>
         )}
       </div>
 
@@ -184,7 +184,7 @@ function Sidebar({ collapsed, mobileOpen, pathname, onNavigate }) {
                 collapsed && 'md:justify-center md:px-0',
               )}
             >
-              <item.icon className="size-4 shrink-0" />
+              <item.icon className={cn('size-4 shrink-0', active && 'text-primary')} />
               <span className={cn(collapsed && 'md:hidden')}>{item.label}</span>
             </Link>
           )
@@ -194,7 +194,7 @@ function Sidebar({ collapsed, mobileOpen, pathname, onNavigate }) {
       <div className="shrink-0 border-t border-sidebar-border p-3">
         <p
           className={cn(
-            'text-xs text-muted-foreground',
+            'font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground',
             collapsed && 'md:text-center',
           )}
         >
@@ -243,7 +243,12 @@ function Topbar({ onMenu, onCollapse, collapsed, onSearch, onLogout }) {
       </button>
 
       <div className="ml-auto flex items-center gap-1">
-        <ThemeToggle />
+        <Button variant="ghost" size="sm" asChild className="text-muted-foreground">
+          <a href="/" target="_blank" rel="noreferrer">
+            <ArrowUpRight className="size-4" />
+            <span className="hidden sm:inline">View site</span>
+          </a>
+        </Button>
         <Button
           variant="ghost"
           size="icon"
@@ -257,29 +262,7 @@ function Topbar({ onMenu, onCollapse, collapsed, onSearch, onLogout }) {
   )
 }
 
-function ThemeToggle() {
-  const { resolvedTheme, setTheme } = useTheme()
-  const [mounted, setMounted] = useState(false)
-  useEffect(() => setMounted(true), [])
-
-  return (
-    <Button
-      variant="ghost"
-      size="icon"
-      aria-label="Toggle theme"
-      onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
-    >
-      {mounted && resolvedTheme === 'dark' ? (
-        <Sun className="size-4" />
-      ) : (
-        <Moon className="size-4" />
-      )}
-    </Button>
-  )
-}
-
 function CommandMenu({ open, setOpen, router, onLogout }) {
-  const { resolvedTheme, setTheme } = useTheme()
   const go = (href) => {
     setOpen(false)
     router.push(href)
@@ -310,14 +293,14 @@ function CommandMenu({ open, setOpen, router, onLogout }) {
             Add project
           </CommandItem>
           <CommandItem
-            value="Toggle theme"
+            value="View site"
             onSelect={() => {
-              setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')
               setOpen(false)
+              window.open('/', '_blank')
             }}
           >
-            {resolvedTheme === 'dark' ? <Sun /> : <Moon />}
-            Toggle theme
+            <ArrowUpRight />
+            View site
           </CommandItem>
           <CommandItem
             value="Sign out"

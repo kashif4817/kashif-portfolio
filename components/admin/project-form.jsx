@@ -103,116 +103,121 @@ export function ProjectForm({ project, onSaved, onCancel }) {
         </DialogDescription>
       </DialogHeader>
 
-      <div className="space-y-1.5">
-        <Label>Images</Label>
-        <ImageUpload
-          value={form.images}
-          onChange={(urls) => setForm((f) => ({ ...f, images: urls }))}
-        />
-        <p className="text-xs text-muted-foreground">
-          First image is the cover. Up to 5. Projects without images show a gradient card.
-        </p>
-      </div>
-
-      <div className="grid gap-4 sm:grid-cols-2">
+      {/* Two-column layout: images + live preview left, fields right */}
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
         <div className="space-y-1.5">
-          <Label htmlFor="title">Title</Label>
-          <Input
-            id="title"
-            value={form.title}
-            onChange={set('title')}
-            placeholder="Ecommerce Web App"
-            required
+          <Label>Images</Label>
+          <ImageUpload
+            value={form.images}
+            onChange={(urls) => setForm((f) => ({ ...f, images: urls }))}
           />
+          <p className="text-xs text-muted-foreground">
+            First image is the cover. Up to 5. Projects without images show a gradient card.
+          </p>
         </div>
-        <div className="space-y-1.5">
-          <Label htmlFor="badge">Badge</Label>
-          <Input
-            id="badge"
-            value={form.badge}
-            onChange={set('badge')}
-            placeholder="Full Stack"
-          />
-        </div>
-      </div>
 
-      <div className="space-y-1.5">
-        <Label htmlFor="description">Description</Label>
-        <Textarea
-          id="description"
-          value={form.description}
-          onChange={set('description')}
-          rows={3}
-          placeholder="Short summary of what you built and the key features."
-        />
-      </div>
+        <div className="space-y-4">
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="space-y-1.5">
+              <Label htmlFor="title">Title</Label>
+              <Input
+                id="title"
+                value={form.title}
+                onChange={set('title')}
+                placeholder="Ecommerce Web App"
+                required
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="badge">Badge</Label>
+              <Input
+                id="badge"
+                value={form.badge}
+                onChange={set('badge')}
+                placeholder="Full Stack"
+              />
+            </div>
+          </div>
 
-      <div className="space-y-1.5">
-        <Label htmlFor="tech">Tech stack</Label>
-        <Input
-          id="tech"
-          value={form.tech}
-          onChange={set('tech')}
-          placeholder="Next.js, React, Node.js, PostgreSQL"
-        />
-        <p className="text-xs text-muted-foreground">Comma-separated.</p>
-      </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="description">Description</Label>
+            <Textarea
+              id="description"
+              value={form.description}
+              onChange={set('description')}
+              rows={3}
+              placeholder="Short summary of what you built and the key features."
+            />
+          </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div className="space-y-1.5">
-          <Label htmlFor="link">Live / primary link</Label>
-          <Input
-            id="link"
-            value={form.link}
-            onChange={set('link')}
-            placeholder="https://…"
-            type="url"
-          />
-        </div>
-        <div className="space-y-1.5">
-          <Label htmlFor="github">GitHub link</Label>
-          <Input
-            id="github"
-            value={form.github}
-            onChange={set('github')}
-            placeholder="https://github.com/…"
-            type="url"
-          />
-        </div>
-      </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="tech">Tech stack</Label>
+            <Input
+              id="tech"
+              value={form.tech}
+              onChange={set('tech')}
+              placeholder="Next.js, React, Node.js, PostgreSQL"
+            />
+            <p className="text-xs text-muted-foreground">Comma-separated.</p>
+          </div>
 
-      <div className="grid gap-4 sm:grid-cols-3">
-        <div className="space-y-1.5">
-          <Label htmlFor="category">Category</Label>
-          <Select id="category" value={form.category} onChange={set('category')}>
-            {PROJECT_CATEGORIES.map((c) => (
-              <option key={c.value} value={c.value}>
-                {c.label}
-              </option>
-            ))}
-          </Select>
-        </div>
-        <div className="space-y-1.5">
-          <Label htmlFor="sort_order">Sort order</Label>
-          <Input
-            id="sort_order"
-            type="number"
-            value={form.sort_order}
-            onChange={set('sort_order')}
-          />
-        </div>
-        <div className="space-y-1.5">
-          <Label htmlFor="featured">Visibility</Label>
-          <Select
-            id="featured"
-            value={form.featured ? 'yes' : 'no'}
-            onChange={(e) =>
-              setForm((f) => ({ ...f, featured: e.target.value === 'yes' }))
-            }
-          >
-            <option value="yes">Visible</option>
-            <option value="no">Hidden</option>
-          </Select>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="space-y-1.5">
+              <Label htmlFor="link">Live / primary link</Label>
+              <Input
+                id="link"
+                value={form.link}
+                onChange={set('link')}
+                placeholder="https://…"
+                type="url"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="github">GitHub link</Label>
+              <Input
+                id="github"
+                value={form.github}
+                onChange={set('github')}
+                placeholder="https://github.com/…"
+                type="url"
+              />
+            </div>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-3">
+            <div className="space-y-1.5">
+              <Label htmlFor="category">Category</Label>
+              <Select id="category" value={form.category} onChange={set('category')}>
+                {PROJECT_CATEGORIES.map((c) => (
+                  <option key={c.value} value={c.value}>
+                    {c.label}
+                  </option>
+                ))}
+              </Select>
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="sort_order">Sort order</Label>
+              <Input
+                id="sort_order"
+                type="number"
+                value={form.sort_order}
+                onChange={set('sort_order')}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="featured">Visibility</Label>
+              <Select
+                id="featured"
+                value={form.featured ? 'yes' : 'no'}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, featured: e.target.value === 'yes' }))
+                }
+              >
+                <option value="yes">Visible</option>
+                <option value="no">Hidden</option>
+              </Select>
+            </div>
+          </div>
         </div>
       </div>
 
